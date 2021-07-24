@@ -19,3 +19,5 @@ Run the required tool, e.g. running mxutil to extact the module package
 ```sh
 docker run -v ~/Mendix/MyApp:/opt/app IMAGE_ID mxutil.exe create-module-package --package-dir /opt/app/packages/ /opt/app/App.mpr "MyModule"
 ```
+
+> `$JAVA_HOME` environment variable is avaliable on path inside the container and can be referred to when using `mxbuild`.
