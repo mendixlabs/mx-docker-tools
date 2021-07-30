@@ -17,7 +17,7 @@ env:
   # github.repository as <account>/<repo>
   IMAGE_NAME: ${{ github.repository }}
   MX_VERSION: ${{ github.event.inputs.MX_VERSION }}
-  PUSH_IMAGE: ${{ github.event.inputs.push_image }} == 'true'
+  PUSH_IMAGE: ${{ github.event.inputs.push_image == 'true' }}
 
 jobs:
   build:
@@ -46,6 +46,8 @@ jobs:
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: ./src/
+          build-args: |
+            MX_VERSION=${{ env.MX_VERSION }}
           file: ./src/Dockerfile
           tags: ${{ env.IMAGE_NAME }}:${{env.MX_VERSION}}
           push: ${{ env.PUSH_IMAGE }}
