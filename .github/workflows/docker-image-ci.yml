@@ -20,4 +20,4 @@ jobs:
     - uses: actions/checkout@v2
     
     - name: Build image
-      run: (cd src && docker build . --file Dockerfile --build-arg MX_VERSION=${{ env.MX_VERSION }}) -t ${{ env.IMAGE_NAME }}:${{ env.MX_VERSION }}
+      run: (cd src && docker build --file Dockerfile --build-arg MX_VERSION=${{ env.MX_VERSION }}) -t ${{ env.IMAGE_NAME }}:${{ env.MX_VERSION }} .
