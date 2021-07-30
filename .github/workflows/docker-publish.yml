@@ -1,0 +1,51 @@
+name: Docker publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      MX_VERSION:
+        description: 'Mendix version to build the image for'
+        required: true
+        default: '9.3.0.22930'
+      push_image:
+        description: 'Specifies if the build should push the image'
+        required: false
+        default: 'true'
+env:
+  # Use docker.io for Docker Hub if empty
+  REGISTRY: ghcr.io
+  # github.repository as <account>/<repo>
+  IMAGE_NAME: ${{ github.repository }}
+  MX_VERSION: ${{ github.event.inputs.MX_VERSION }}
+  PUSH_IMAGE: ${{ github.event.inputs.push_image }} == 'true'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # Login against a Docker registry except on PR
+      # https://github.com/docker/login-action
+      - name: Log into registry ${{ env.REGISTRY }}
+        uses: docker/login-action@28218f9b04b4f3f62068d7b6ce6ca5b26e35336c
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Build and push Docker image with Buildx (don't push on PR)
+      # https://github.com/docker/build-push-action
+      - name: Build and push Docker image
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        with:
+          context: ./src/
+          file: ./src/Dockerfile
+          tags: ${{ env.IMAGE_NAME }}:${{env.MX_VERSION}}
+          push: ${{ env.PUSH_IMAGE }}
