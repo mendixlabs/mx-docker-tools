@@ -1,0 +1,23 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+    
+env:
+  # github.repository as <account>/<repo>
+  IMAGE_NAME: ${{ github.repository }}
+  MX_VERSION: '9.3.0.22930'
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Build image
+      run: (cd src && docker build --file Dockerfile --build-arg MX_VERSION=${{ env.MX_VERSION }} -t ${{ env.IMAGE_NAME }}:${{ env.MX_VERSION }} .)
